@@ -5,9 +5,11 @@ exports.up = function(knex) {
         if (!exists) {
           return knex.schema
             .createTable('Users', function(table) {
-                table.increments('id').primary();
+                table.increments('user_id').primary();
                 table.string('username');
+                table.unique('username');
                 table.string('password');
+                table.unique('password');
           });
         }
       });
