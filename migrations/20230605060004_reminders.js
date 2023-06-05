@@ -4,13 +4,12 @@ exports.up = function(knex) {
     .then(function(exists) {
         if (!exists) {
           return knex.schema
-            .createTable('Reminders', function(table) { // ask Jena about foreign key
+            .createTable('Reminders', function(table) {
                 table.increments('reminder_id').primary();
                 table.string('username');
-                table.date('date');
-                table.time('time');
-                table.text('descritpion');
-                table.boolean('done');
+                table.datetime('date');
+                table.text('description');
+                table.boolean('done').default(false);
           });
         }
       });
