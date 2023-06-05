@@ -1,6 +1,6 @@
 const {Router} = require('express');
 const { StatusCodes } = require('http-status-codes');
-const db = require('./db');
+const db = require('../../db/db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 

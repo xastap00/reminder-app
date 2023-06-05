@@ -1,7 +1,7 @@
 const express = require('express')
 var cookieParser = require('cookie-parser')
 const router = require('./api')
-// const db = require('./db')
+// const db = require('./db/db')
 const app = express()
 const port = 3000
 

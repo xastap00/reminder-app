@@ -5,9 +5,9 @@ const signUp = require('./signUp');
 const logout = require('./logout');
 const router = Router();
 
-router.use('/jwtExist', jwtExist);
+// router.use('/jwtExist', jwtExist);
 router.use('/signIn', signIn);
 router.use('/signUp', signUp);
-router.use('/logout', logout);
+// router.use('/logout', logout);
 
 module.exports = router;
