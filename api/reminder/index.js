@@ -6,8 +6,8 @@ const dlt = require('./delete');
 const router = Router();
 
 router.use('/create', create);
-// router.use('/update', update);
-// router.use('/list', list);
-// router.use('/delete', dlt);
+router.use('/update', update);
+router.use('/list', list);
+router.use('/delete', dlt);
 
 module.exports = router;

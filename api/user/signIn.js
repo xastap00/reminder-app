@@ -3,6 +3,7 @@ const { StatusCodes } = require('http-status-codes');
 const db = require('../../db/db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 const router = Router();
 
@@ -26,8 +27,8 @@ router.post("/", async (req, res) => {
         }
 
         const token = jwt.sign(
-            {id: user._id, username: user.username},
-            'long_long_impossible_to_guess_and_very_secure_random_secret',
+            {username: user.username},
+            process.env.SECRET_KEY,
             {
                 expiresIn: '2 hours'
             }
@@ -40,7 +41,7 @@ router.post("/", async (req, res) => {
 
         res.cookie('token', token, cookieOpts)
             .json({
-            username: `${user.username}`, 
+            username
         });
 
     } catch (e) {

@@ -3,19 +3,21 @@ const { StatusCodes } = require('http-status-codes');
 const db = require('../../db/db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 const router = Router();
 
 router.post("/", async (req, res) => {
     try {
-        const {username, password, name, surname } = req.body;
+        console.log(req.body);
+        const {username, password } = req.body;
 
         if (!(username && password)) {
             res.sendStatus(StatusCodes.BAD_REQUEST);
             return;
         }
 
-        const existingUser = await db('Users').where('username', req.body.username).first();
+        const existingUser = await db('Users').where('username', username).first();
         
         if (existingUser) {
             res.sendStatus(StatusCodes.BAD_REQUEST);
@@ -24,11 +26,11 @@ router.post("/", async (req, res) => {
 
         const encPassword = await bcrypt.hash(password, 10);
 
-        await db('Users').insert(username, encPassword);
+        await db('Users').insert({username, password: encPassword});
 
         const token = jwt.sign(
-            {id: user._id, username: user.username},
-            'long_long_impossible_to_guess_and_very_secure_random_secret',
+            {username: username},
+            process.env.SECRET_KEY,
             {
                 expiresIn: '2 hours'
             }
@@ -41,7 +43,7 @@ router.post("/", async (req, res) => {
 
         res.cookie('token', token, cookieOpts)
             .json({
-            username: `${user.username}`,
+            username
         });
         
     } catch (e) {
