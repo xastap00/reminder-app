@@ -9,6 +9,7 @@ const router = Router();
 
 router.post("/", async (req, res) => {
     try {
+        console.log(req.body);
         const {username, password} = req.body;
         if (!(username && password)) {
             res.sendStatus(StatusCodes.BAD_REQUEST);
@@ -36,7 +37,7 @@ router.post("/", async (req, res) => {
 
         const cookieOpts = {
             expires: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
-            httpOnly: true
+            // httpOnly: true
         };
 
         res.cookie('token', token, cookieOpts)
