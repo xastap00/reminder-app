@@ -1,55 +1,66 @@
 import './Main.css'
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import React, { useEffect } from 'react';
-import TabPanel from '../components/TabPanel';
-import request from '../request';
+// import React, { useEffect } from 'react';
+// import request from '../request';
 
-function a11yProps(index) {
-    return {
-      id: `simple-tab-${index}`,
-      'aria-controls': `simple-tabpanel-${index}`,
-    };
-  }
+import Tab from 'react-bootstrap/Tab';
+import Tabs from 'react-bootstrap/Tabs';
+import Button from 'react-bootstrap/Button';
 
 function Main() {
-    const [value, setValue] = React.useState(0);
-    useEffect( () => {
-        request('/api/reminder/list', {
-            method: 'get',
-            // headers: {
-            //     "Content-Type": "application/json"
-            // },
-            // body: JSON.stringify({
-            //     username: 'Ilya',
-            //     password: 'Ilya'
-            // })
-            
-        })
-    })
 
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
-    };
+    // const [value, setValue] = React.useState(0);
+    // useEffect( () => {
+    //     request('/api/user/signIn', {
+    //         method: 'get',
+    //         headers: {
+    //             "Content-Type": "application/json"
+    //         },
+    //         body: JSON.stringify({
+    //             username: 'Ilya',
+    //             password: 'Ilya'
+    //         })
+            
+    //     })
+    // })
+
     return (
         <div className = 'container'>
-            <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-                <Tab label="Item One" {...a11yProps(0)} />
-                <Tab label="Item Two" {...a11yProps(1)} />
-                <Tab label="Item Three" {...a11yProps(2)} />
-            </Tabs>
-            
-            <TabPanel value={value} index={0}>
-                Женя лучший!    
-            </TabPanel>
-            <TabPanel value={value} index={1}>
-                Женя лучший!!
-            </TabPanel>
-            <TabPanel value={value} index={2}>
-                Женя лучший!!!
-            </TabPanel>
+            <div className= 'title-container'>
+                <h1 className = 'title'> Reminders </h1>
+                <div className= 'add-button'> <Button variant="outline-dark">Add new</Button> </div>
+            </div>
+            <div className = 'table'>
+                <Tabs
+                    defaultActiveKey="Inbox"
+                    id="main-table"
+                    className="mb-3"
+                    justify
+                >
+                    <Tab eventKey="Snoozed" title="Snoozed">
+                        Tab content for Home
+                    </Tab>
+                    <Tab eventKey="Inbox" title="Inbox">
+                        <div className = 'reminder'>
+                            {/* <UserReservation court={court.name} date_start={moment(item.date_start).format('DD.MM.YYYY HH:mm')} date_end={moment(item.date_end).format('DD.MM.YYYY HH:mm')} addres={item.address}/>
+                            <div className={styles["heart-div"]}>
+                                    <FontAwesomeIcon icon={faRectangleXmark} className={styles["heart"]}/>
+                            </div> */}
+                            test
+                        </div>
+                    </Tab>
+                    <Tab eventKey="Done" title="Done">
+                        <div className = 'reminder'>
+                            {/* <UserReservation court={court.name} date_start={moment(item.date_start).format('DD.MM.YYYY HH:mm')} date_end={moment(item.date_end).format('DD.MM.YYYY HH:mm')} addres={item.address}/>
+                            <div className={styles["heart-div"]}>
+                                    <FontAwesomeIcon icon={faRectangleXmark} className={styles["heart"]}/>
+                            </div> */}
+                            test
+                        </div>
+                    </Tab>  
+                </Tabs>
+            </div>
         </div>
     );
-}
+  };
 
 export default Main;

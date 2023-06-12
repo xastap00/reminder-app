@@ -4,7 +4,6 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const router = require('./api')
 const cors = require('cors');
-// const db = require('./db/db')
 const app = express();
 const port = 4000;
 
@@ -12,6 +11,7 @@ app.use(express.static(path.join(__dirname, "..", "client/build")));
 app.use(express.static("client/build"));
 app.use(cookieParser());
 app.use(bodyParser.json());
+
 app.use(cors({
   credentials: true,
   origin: 'http://localhost:3000',
@@ -28,7 +28,6 @@ app.use(function(req, res, next) {
 })
 
 app.use('/api', router);
-
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

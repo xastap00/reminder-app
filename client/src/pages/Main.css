@@ -3,7 +3,30 @@
     max-width: 700px;
     height: 60%;
     width: 80%;
-    background-color: orange;
+    background-color: white;
     display: flex;
     flex-direction: column;
+}
+.title-container{
+    display: flex;
+    justify-content: space-between;
+}
+.title{
+    display: flex;
+    font-size: 50px;
+    margin: 0px;
+    padding: 0px;
+}
+.add-button{
+    height: 65%;
+    align-self: flex-end;
+}
+.table{
+    border: solid;
+    box-shadow: rgb(0 0 0 / 35%) 0px 5px 15px;
+    border-radius: 5px;
+}
+.reminder{
+    border-top-style: solid;
+    border-bottom-style: solid;
 }
