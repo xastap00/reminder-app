@@ -3,7 +3,7 @@ import Cookies from 'js-cookie'
 const host = 'http://localhost:4000'
 
 function request (resource, options) {
-// TODO check resource signIn\Up ending ? token given or not given
+// TODO check resource signIn\Up ending ? token given or not
     fetch(host + resource, {
         ...options,
         headers: {
@@ -13,6 +13,7 @@ function request (resource, options) {
         credentials: 'include'
     }).then (res => {
         console.log(res.status)
+        return res.json();
     })
 }
 

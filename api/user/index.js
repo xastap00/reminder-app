@@ -1,8 +1,8 @@
 const {Router} = require('express');
-const jwtExist = require('./jwtExist');
+// const jwtExist = require('./jwtExist');
 const signIn = require('./signIn');
 const signUp = require('./signUp');
-const logout = require('./logout');
+// const logout = require('./logout');
 const router = Router();
 
 // router.use('/jwtExist', jwtExist);

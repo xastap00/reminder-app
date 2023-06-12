@@ -1,13 +1,13 @@
 const {Router} = require('express');
 const { StatusCodes } = require('http-status-codes');
 const db = require('../../db/db');
-const verifyjwt = require('./jwtVer');
+const verifyJwt = require('./jwtVer');
 
 const router = Router();
 
 router.get("/", async (req, res) => {
     try {
-        const jwt = verifyjwt(req.headers.authorization);
+        const jwt = verifyJwt(req.headers.authorization);
         if(jwt === null) {
             res.status(StatusCodes.UNAUTHORIZED).json({
                 msg: 'Invalid token'

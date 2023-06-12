@@ -9,7 +9,6 @@ const router = Router();
 
 router.post("/", async (req, res) => {
     try {
-        console.log(req.body);
         const {username, password } = req.body;
 
         if (!(username && password)) {

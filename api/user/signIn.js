@@ -9,7 +9,6 @@ const router = Router();
 
 router.post("/", async (req, res) => {
     try {
-        console.log(req.body);
         const {username, password} = req.body;
         if (!(username && password)) {
             res.sendStatus(StatusCodes.BAD_REQUEST);
@@ -21,12 +20,10 @@ router.post("/", async (req, res) => {
             res.sendStatus(StatusCodes.BAD_REQUEST);
             return;
         }
-
         if (!bcrypt.compareSync(password, user.password)) {
             res.sendStatus(StatusCodes.BAD_REQUEST);
             return;
         }
-
         const token = jwt.sign(
             {username: user.username},
             process.env.SECRET_KEY,

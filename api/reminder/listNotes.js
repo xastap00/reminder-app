@@ -5,7 +5,7 @@ const verifyJwt = require('./jwtVer');
 
 const router = Router();
 
-router.delete("/", async (req, res) => {
+router.get("/", async (req, res) => {
     try {
         const jwt = verifyJwt(req.headers.authorization);
         if(jwt === null) {
@@ -13,10 +13,12 @@ router.delete("/", async (req, res) => {
                 msg: 'Invalid token'
             });
         }
-        await db('Reminders').where('reminder_id', '=', req.body.reminder_id).where('username', '=', jwt.username).del();
-        res.sendStatus(StatusCodes.OK);
+        const Notes = await (
+            db('Notes').where('username', '=', jwt.username).select('*')
+        );
+        res.json(Notes);
     } catch (e) {
-        res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR);
         console.log(e);
     }
 });
