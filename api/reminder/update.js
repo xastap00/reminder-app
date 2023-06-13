@@ -13,12 +13,11 @@ router.put("/", async (req, res) => {
                 msg: 'Invalid token'
             });
         }
-        const {reminder_id, ...data} = req.body
         await (
              db('Reminders')
-             .update(data)
-             .where('reminder_id', '=', reminder_id)
+             .where('reminder_id', '=', req.body.reminder_id)
              .where('username', '=', jwt.username)
+             .update(req.body.data)
         );
         res.sendStatus(StatusCodes.OK);
     } catch (e) {

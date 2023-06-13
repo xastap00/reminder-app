@@ -1,4 +1,4 @@
-.container{
+.main-container{
     max-height: 500px;
     max-width: 700px;
     height: 60%;
@@ -13,13 +13,9 @@
 }
 .title{
     display: flex;
-    font-size: 50px;
+    font-size: 41px;
     margin: 0px;
     padding: 0px;
-}
-.add-button{
-    height: 65%;
-    align-self: flex-end;
 }
 .table{
     border: solid;
@@ -27,10 +23,61 @@
     border-radius: 5px;
 }
 .reminder{
-    border-top-style: solid;
     border-bottom-style: solid;
 }
 .note{
-    border-top-style: solid;
+    word-wrap: break-word;
     border-bottom-style: solid;
+}
+
+.nav-item{
+    border-bottom-style: solid;
+    border-color: black;
+    border-right-style: solid;
+}
+
+.nav-item:last-child{
+    margin-left: auto;
+    border-left-style: solid;
+    border-right-style: none;
+}
+
+.nav-link.active{
+    background-color: cadetblue  !important;
+    color: black;
+}
+
+.nav-tabs{
+    --bs-nav-tabs-border-width: 0 !important;
+}
+
+.nav-tabs .nav-link{
+    border: none !important;
+    border-radius: 0 !important;
+}
+
+.mb-3{
+    margin: 0 !important;
+}
+.reminder-grid-row{
+    align-items: center;
+}
+.button-section{
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: row;
+    opacity: 0;
+    align-items: center;
+}
+.button-section:hover{
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+.form-control{
+    border: none;
+}
+.icon{
+    width: 35px;
+    height: 25px;
+    margin-top: 10px;
 }

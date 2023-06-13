@@ -1,91 +1,103 @@
 import './Main.css'
 import React, { useEffect, useState } from 'react';
-import request from '../request';
-
+import moment from 'moment';
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
-import Button from 'react-bootstrap/Button';
-import Cookies from 'js-cookie';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Form from 'react-bootstrap/Form';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faCheck } from '@fortawesome/free-solid-svg-icons'
+import SignInFun from '../functions/singInFun';
+import ListNotesFun from '../functions/listNotesFun';
+import ListRemindersFun from '../functions/listRemindersFun';
+import UpdateRemindersFun from '../functions/updateRemindersFun';
+import DeleteRemindersFun from '../functions/deleteRemindersFun';
 
 function Main() {
 
     const host = 'http://localhost:4000'
 
-    useEffect( () => {
-        request('/api/user/signIn', {
-            method: 'post',
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                username: 'test',
-                password: 'test'
-            })
-        })
-    })
-
-
-    // const response = await request('/api/reminder/listNotes', {
-    //     method: 'post',
-    //     headers: {
-    //         "Content-Type": "application/json"
-    //     }
-    //     });
-    // const data = await response.json();
-    // setNote(data);
-
     const [notes, setNote] = useState([]);
+    const [remindersDone, setRemindersDone] = useState([]);
+    const [remindersToBeDone, setRemindersToBeDone] = useState([]);
+    
     useEffect( () => {
-        fetch(host + '/api/reminder/listNotes', {
-            method: 'get',
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: 'Bearer ' + Cookies.get('token')
-            },
-            credentials: 'include'
-        })
-        .then(async (res) => { 
-            const data = await res.json()
-            console.log(data);
-            setNote(data);
-        })
-        .catch((e) => {
-            console.log("fetch err");
-        });
+        (async () => {
+            SignInFun(host);
+            const notesData = await ListNotesFun(host);
+            const [firstRemindersDone, firstRemindersToBeDone] = await ListRemindersFun(host);
+            if (!notesData || !firstRemindersDone || !firstRemindersToBeDone) {
+                return;
+            }
+            setNote(notesData);
+            setRemindersDone(firstRemindersDone);
+            setRemindersToBeDone(firstRemindersToBeDone);
+        })();
     }, []);
 
-    const [reminders, setReminders] = useState([]);
+    const [dataUpd, setDataUpd] = useState();
+
+    const dataChange = (e, id, doneFlag) => {       
+        const reminder = remindersToBeDone.filter(reminder => reminder.reminder_id === id);
+        const newReminder = [...reminder];
+        const itemInReminder = newReminder[0];
+        if (doneFlag === 1) {
+            itemInReminder.done = true;
+        } else {
+            itemInReminder[e.target.name] = e.target.value;
+        }
+        const {reminder_id, ...newData} = newReminder[0];
+        const dataToUdp = {
+            id: reminder_id,
+            data: newData
+        };
+        setDataUpd(dataToUdp);
+    };
+
     useEffect( () => {
-        fetch(host + '/api/reminder/list', {
-            method: 'get',
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: 'Bearer ' + Cookies.get('token')
-            },
-            credentials: 'include'
-        })
-        .then(async (res) => { 
-            const data = await res.json()
-            console.log(data);
-            setReminders(data);
-        })
-        .catch((e) => {
-            console.log("fetch err");
-        });
-    }, []);
+        (async () => {
+            if(!dataUpd){
+                return;
+            }
+                UpdateRemindersFun(host, dataUpd);
+                const [newRemindersDone, newRemindersToBeDone] = await ListRemindersFun(host);
+                setRemindersDone(newRemindersDone);
+                setRemindersToBeDone(newRemindersToBeDone);
+        })();
+    }, [dataUpd]);
+
+    const [dataDel, setDataDel] = useState();
+
+    const deleteReminder = (id) => {
+        setDataDel(id);
+    };
+
+    useEffect( () => {
+        (async () => {
+            if(!dataDel){
+                return;
+            }
+                console.log(dataDel);
+                DeleteRemindersFun(host, dataDel);
+                const [newRemindersDone, newRemindersToBeDone] = await ListRemindersFun(host);
+                setRemindersDone(newRemindersDone);
+                setRemindersToBeDone(newRemindersToBeDone);
+        })();
+    }, [dataDel]);
 
     return (
-        <div className = 'container'>
+        <div className = 'main-container'>
             <div className= 'title-container'>
                 <h1 className = 'title'> Reminders </h1>
-                <div className= 'add-button'> <Button variant="outline-dark">Add new</Button> </div>
             </div>
             <div className = 'table'>
                 <Tabs
                     defaultActiveKey="Inbox"
                     id="main-table"
                     className="mb-3"
-                    justify
                 >
                     <Tab eventKey="Snoozed" title="Snoozed">
                             {notes.map((note) => {
@@ -94,23 +106,69 @@ function Main() {
                                 );
                             })}
                     </Tab>
-                    <Tab eventKey="Inbox" title="Inbox">
-                        <div className = 'reminder'>
-                            test
-                        </div>
+                    <Tab eventKey="Inbox" title="Inbox">                       
+                            {remindersToBeDone.map((reminderToBeDone) => {
+                                return (
+                                    <div className = 'reminder' key = {reminderToBeDone.id}>
+                                        <Container>
+                                            <Row className = 'reminder-grid-row'>
+                                                <Col>
+                                                    <Form.Group controlId = {reminderToBeDone.reminder_id}>
+                                                        <Form.Control
+                                                            name = 'date'
+                                                            type = 'datetime-local'
+                                                            defaultValue = {moment(reminderToBeDone.date).format('YYYY-MM-DD HH:mm')}
+                                                            onChange = {(e) => dataChange(e, reminderToBeDone.reminder_id, 0)}
+                                                        />
+                                                    </Form.Group>
+                                                </Col>
+                                                <Col xs={6}> 
+                                                    <Form.Group controlId = {reminderToBeDone.reminder_id}>
+                                                        <Form.Control
+                                                            name = 'description'
+                                                            as = 'textarea'
+                                                            rows = {1}
+                                                            onChange = {(e) => dataChange(e, reminderToBeDone.reminder_id, 0)}
+                                                            defaultValue={reminderToBeDone.description}
+                                                        />
+                                                    </Form.Group>
+                                                </Col>
+                                                <Col className = 'button-section'>
+                                                    <FontAwesomeIcon icon={faTrash} className = 'icon' onClick = {() => deleteReminder(reminderToBeDone.reminder_id)}/>
+                                                    <FontAwesomeIcon icon={faCheck} className = 'icon' onClick = {(e) => dataChange(e, reminderToBeDone.reminder_id, 1)}/>    
+                                                </Col>
+                                            </Row>
+                                        </Container>
+                                    </div>
+                                )
+                            })}
                     </Tab>
                     <Tab eventKey="Done" title="Done">
-                        <div className = 'reminder'>
-                            {/* <UserReservation court={court.name} date_start={moment(item.date_start).format('DD.MM.YYYY HH:mm')} date_end={moment(item.date_end).format('DD.MM.YYYY HH:mm')} addres={item.address}/>
-                            <div className={styles["heart-div"]}>
-                                    <FontAwesomeIcon icon={faRectangleXmark} className={styles["heart"]}/>
-                            </div> */}
-                            test
-                        </div>
-                    </Tab>  
+                            {remindersDone.map((reminderDone) => {
+                                return (
+                                    <div className = 'reminder'>
+                                        <Container>
+                                            <Row className = 'reminder-grid-row'>
+                                                <Col>
+                                                    {moment(reminderDone.date).format('YYYY-MM-DD HH:mm')}
+                                                </Col>
+                                                <Col xs={6}>
+                                                    {reminderDone.description}
+                                                </Col>
+                                                <Col className = 'button-section'>
+                                                    <FontAwesomeIcon icon={faTrash} className = 'icon' onClick = {() => deleteReminder(reminderDone.reminder_id)}/>
+                                                </Col>
+                                            </Row>
+                                        </Container>
+                                    </div>
+                                )
+                            })}
+                    </Tab>
+                    <Tab eventKey="Add new" title="Add new">
+                    </Tab>
                 </Tabs>
             </div>
         </div>
     );
-  };
+};
 export default Main;
