@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie'
 
-function DeleteRemindersFun (host, id) {
-    fetch(host + '/api/reminder/delete', {
+async function DeleteRemindersFun (host, id) {
+    return fetch(host + '/api/reminder/delete', {
         method: 'delete',
         headers: {
             "Content-Type": "application/json",

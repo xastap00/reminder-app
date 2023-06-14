@@ -1,16 +1,16 @@
 import Cookies from 'js-cookie'
 
-async function UpdateRemindersFun (host, item) {
-    return fetch(host + '/api/reminder/update', {
-        method: 'put',
+async function CreateRemindersFun (host, date, desc) {
+    return fetch(host + '/api/reminder/create', {
+        method: 'post',
         headers: {
             "Content-Type": "application/json",
             Authorization: 'Bearer ' + Cookies.get('token')
         },
         credentials: 'include',
         body: JSON.stringify({
-            reminder_id: item.id,
-            data: item.data
+            datetime: date,
+            description: desc
         })
     })
     .then (res => {
@@ -21,4 +21,4 @@ async function UpdateRemindersFun (host, item) {
     });
 };
 
-export default UpdateRemindersFun
+export default CreateRemindersFun

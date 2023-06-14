@@ -7,14 +7,20 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash } from '@fortawesome/free-solid-svg-icons'
-import { faCheck } from '@fortawesome/free-solid-svg-icons'
+import { faTrash, faCheck } from '@fortawesome/free-solid-svg-icons'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { StaticTimePicker } from '@mui/x-date-pickers/StaticTimePicker'; 
+import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker'; 
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+
 import SignInFun from '../functions/singInFun';
 import ListNotesFun from '../functions/listNotesFun';
 import ListRemindersFun from '../functions/listRemindersFun';
 import UpdateRemindersFun from '../functions/updateRemindersFun';
 import DeleteRemindersFun from '../functions/deleteRemindersFun';
+import CreateRemindersFun from '../functions/createRemindersFun';
 
 function Main() {
 
@@ -23,6 +29,19 @@ function Main() {
     const [notes, setNote] = useState([]);
     const [remindersDone, setRemindersDone] = useState([]);
     const [remindersToBeDone, setRemindersToBeDone] = useState([]);
+    const [date, setDate] = useState(moment());
+    const [time, setTime] = useState(moment());
+    const [description, setDescription] = useState('');
+    const [currentTab, setCurrentTab] = useState();
+
+    async function loadData () {
+        const [newRemindersDone, newRemindersToBeDone] = await ListRemindersFun(host);
+        console.log("newRemLoad",newRemindersDone);
+        console.log("newRemLoadTo",newRemindersToBeDone);
+        setRemindersDone([...newRemindersDone]);
+        setRemindersToBeDone([...newRemindersToBeDone]);
+        console.log("afterset", remindersToBeDone);
+    }
     
     useEffect( () => {
         (async () => {
@@ -32,15 +51,13 @@ function Main() {
             if (!notesData || !firstRemindersDone || !firstRemindersToBeDone) {
                 return;
             }
-            setNote(notesData);
-            setRemindersDone(firstRemindersDone);
-            setRemindersToBeDone(firstRemindersToBeDone);
+            setNote([...notesData]);
+            setRemindersDone([...firstRemindersDone]);
+            setRemindersToBeDone([...firstRemindersToBeDone]);
         })();
     }, []);
 
-    const [dataUpd, setDataUpd] = useState();
-
-    const dataChange = (e, id, doneFlag) => {       
+    const dataChange = async (e, id, doneFlag) => {       
         const reminder = remindersToBeDone.filter(reminder => reminder.reminder_id === id);
         const newReminder = [...reminder];
         const itemInReminder = newReminder[0];
@@ -54,40 +71,44 @@ function Main() {
             id: reminder_id,
             data: newData
         };
-        setDataUpd(dataToUdp);
+        await UpdateRemindersFun(host, dataToUdp);
+        await loadData();
     };
 
-    useEffect( () => {
-        (async () => {
-            if(!dataUpd){
-                return;
-            }
-                UpdateRemindersFun(host, dataUpd);
-                const [newRemindersDone, newRemindersToBeDone] = await ListRemindersFun(host);
-                setRemindersDone(newRemindersDone);
-                setRemindersToBeDone(newRemindersToBeDone);
-        })();
-    }, [dataUpd]);
-
-    const [dataDel, setDataDel] = useState();
-
-    const deleteReminder = (id) => {
-        setDataDel(id);
+    const deleteReminder = async (id) => {
+        await DeleteRemindersFun(host, id);
+        await loadData();
     };
 
-    useEffect( () => {
-        (async () => {
-            if(!dataDel){
-                return;
-            }
-                console.log(dataDel);
-                DeleteRemindersFun(host, dataDel);
-                const [newRemindersDone, newRemindersToBeDone] = await ListRemindersFun(host);
-                setRemindersDone(newRemindersDone);
-                setRemindersToBeDone(newRemindersToBeDone);
-        })();
-    }, [dataDel]);
+    const handleCancel = () => {
+        setDescription('');
+        setDate(moment());
+        setTime(moment());
+    };
 
+    const handleOk = async () => {
+        if (description.length > 0) {
+            const datetime = date.clone();
+            datetime.set({
+                hour: time.get('hour'),
+                minute: time.get('minute'),
+                second: 0,
+                millisecond: 0
+            })
+            handleCancel();
+            console.log("createRf");
+            
+            await CreateRemindersFun(host, datetime, description);
+            console.log("loadData");
+            console.log(remindersToBeDone);
+            await loadData();
+            console.log(remindersToBeDone);
+            setCurrentTab('Inbox');
+        } else {
+            return;
+        }
+    };
+console.log('render');
     return (
         <div className = 'main-container'>
             <div className= 'title-container'>
@@ -98,6 +119,10 @@ function Main() {
                     defaultActiveKey="Inbox"
                     id="main-table"
                     className="mb-3"
+                    activeKey={currentTab}
+                    onSelect={(eventKey) => {
+                        setCurrentTab(eventKey);
+                    }}
                 >
                     <Tab eventKey="Snoozed" title="Snoozed">
                             {notes.map((note) => {
@@ -115,6 +140,7 @@ function Main() {
                                                 <Col>
                                                     <Form.Group controlId = {reminderToBeDone.reminder_id}>
                                                         <Form.Control
+                                                            className = 'form-control-inbox'
                                                             name = 'date'
                                                             type = 'datetime-local'
                                                             defaultValue = {moment(reminderToBeDone.date).format('YYYY-MM-DD HH:mm')}
@@ -125,6 +151,7 @@ function Main() {
                                                 <Col xs={6}> 
                                                     <Form.Group controlId = {reminderToBeDone.reminder_id}>
                                                         <Form.Control
+                                                            className = 'form-control-inbox'
                                                             name = 'description'
                                                             as = 'textarea'
                                                             rows = {1}
@@ -165,6 +192,56 @@ function Main() {
                             })}
                     </Tab>
                     <Tab eventKey="Add new" title="Add new">
+                        <Container>
+                            <Row>
+                                <Col xs = {9}>
+                                    <Form.Control
+                                        name = 'description'
+                                        as = 'input'
+                                        placeholder='Remind me about...'
+                                        value={description}
+                                        onChange={(e) => {
+                                            setDescription(e.target.value);
+                                        }}  
+                                    />
+                                </Col>
+                                <Col className = 'addNew-button-section'>
+                                    <Button variant = 'danger' onClick = {handleCancel}> 
+                                        CANSEL
+                                    </Button>
+                                    <Button variant = 'primary' onClick = {handleOk}>
+                                        OK 
+                                    </Button>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col xs = {6}>
+                                    <LocalizationProvider dateAdapter={AdapterMoment}>
+                                        <StaticDatePicker
+                                            orientation="portrait"
+                                            openTo="day"
+                                            disablePast = {true}
+                                            value={date}
+                                            onChange={(newValue) => {
+                                                setDate(newValue);
+                                            }}
+                                        />
+                                    </LocalizationProvider>
+                                </Col>
+                                <Col xs = {6}>
+                                    <LocalizationProvider dateAdapter={AdapterMoment}>
+                                        <StaticTimePicker
+                                            ampm = {false}
+                                            value={time}
+                                            orientation="portrait"
+                                            onChange={(newValue) => {
+                                                setTime(newValue);
+                                            }}
+                                        />
+                                    </LocalizationProvider>
+                                </Col>
+                            </Row>
+                        </Container>
                     </Tab>
                 </Tabs>
             </div>

@@ -73,11 +73,19 @@
     opacity: 1;
     transition: opacity 0.3s ease;
 }
-.form-control{
+.addNew-button-section{
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: row;
+}
+.form-control-inbox{
     border: none;
 }
 .icon{
     width: 35px;
     height: 25px;
     margin-top: 10px;
+}
+.MuiDialogActions-root.MuiDialogActions-spacing.MuiPickersLayout-actionBar.css-14b29qc{
+    display: none;
 }
