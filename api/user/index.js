@@ -5,6 +5,8 @@ const signUp = require('./signUp');
 // const logout = require('./logout');
 const router = Router();
 
+// TODO logOut method
+
 // router.use('/jwtExist', jwtExist);
 router.use('/signIn', signIn);
 router.use('/signUp', signUp);
