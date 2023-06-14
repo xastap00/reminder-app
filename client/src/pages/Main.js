@@ -36,11 +36,8 @@ function Main() {
 
     async function loadData () {
         const [newRemindersDone, newRemindersToBeDone] = await ListRemindersFun(host);
-        console.log("newRemLoad",newRemindersDone);
-        console.log("newRemLoadTo",newRemindersToBeDone);
         setRemindersDone([...newRemindersDone]);
         setRemindersToBeDone([...newRemindersToBeDone]);
-        console.log("afterset", remindersToBeDone);
     }
     
     useEffect( () => {
@@ -95,20 +92,15 @@ function Main() {
                 second: 0,
                 millisecond: 0
             })
-            handleCancel();
-            console.log("createRf");
-            
+            handleCancel();        
             await CreateRemindersFun(host, datetime, description);
-            console.log("loadData");
-            console.log(remindersToBeDone);
             await loadData();
-            console.log(remindersToBeDone);
             setCurrentTab('Inbox');
         } else {
             return;
         }
     };
-console.log('render');
+    
     return (
         <div className = 'main-container'>
             <div className= 'title-container'>
