@@ -199,7 +199,7 @@ function Main() {
                                 </Col>
                                 <Col className = 'addNew-button-section'>
                                     <Button variant = 'danger' onClick = {handleCancel}> 
-                                        CANSEL
+                                        CANCEL
                                     </Button>
                                     <Button variant = 'primary' onClick = {handleOk}>
                                         OK 
