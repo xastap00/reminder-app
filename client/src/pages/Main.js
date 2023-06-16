@@ -24,7 +24,7 @@ import CreateRemindersFun from '../functions/createRemindersFun';
 
 function Main() {
 
-    const host = 'http://localhost:4000'
+    const host = 'https://reminder-app-ad.fly.dev'
 
     const [notes, setNote] = useState([]);
     const [remindersDone, setRemindersDone] = useState([]);
@@ -42,7 +42,7 @@ function Main() {
     
     useEffect( () => {
         (async () => {
-            SignInFun(host);
+            await SignInFun(host);
             const notesData = await ListNotesFun(host);
             const [firstRemindersDone, firstRemindersToBeDone] = await ListRemindersFun(host);
             if (!notesData || !firstRemindersDone || !firstRemindersToBeDone) {
@@ -140,7 +140,7 @@ function Main() {
                                                         />
                                                     </Form.Group>
                                                 </Col>
-                                                <Col xs={6}> 
+                                                <Col> 
                                                     <Form.Group controlId = {reminderToBeDone.reminder_id}>
                                                         <Form.Control
                                                             className = 'form-control-inbox'
@@ -152,7 +152,7 @@ function Main() {
                                                         />
                                                     </Form.Group>
                                                 </Col>
-                                                <Col className = 'button-section'>
+                                                <Col xs = {2} className = 'button-section'>
                                                     <FontAwesomeIcon icon={faTrash} className = 'icon' onClick = {() => deleteReminder(reminderToBeDone.reminder_id)}/>
                                                     <FontAwesomeIcon icon={faCheck} className = 'icon' onClick = {(e) => dataChange(e, reminderToBeDone.reminder_id, 1)}/>    
                                                 </Col>
@@ -171,10 +171,10 @@ function Main() {
                                                 <Col>
                                                     {moment(reminderDone.date).format('YYYY-MM-DD HH:mm')}
                                                 </Col>
-                                                <Col xs={6}>
+                                                <Col>
                                                     {reminderDone.description}
                                                 </Col>
-                                                <Col className = 'button-section'>
+                                                <Col xs = {2} className = 'button-section'>
                                                     <FontAwesomeIcon icon={faTrash} className = 'icon' onClick = {() => deleteReminder(reminderDone.reminder_id)}/>
                                                 </Col>
                                             </Row>

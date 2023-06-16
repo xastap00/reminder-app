@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie'
 
-function SignInFun (host) {
-    fetch(host + '/api/user/signIn', {
+async function SignInFun (host) {
+    return fetch(host + '/api/user/signIn', {
         method: 'post',
         headers: {
             "Content-Type": "application/json",

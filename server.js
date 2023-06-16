@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const router = require('./api')
 const cors = require('cors');
 const app = express();
-const port = 4000;
+const port = 8080;
 
 app.use(express.static(path.join(__dirname, "..", "client/build")));
 app.use(express.static("client/build"));
@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 
 app.use(cors({
   credentials: true,
-  origin: 'http://localhost:4000',
+  origin: 'https://reminder-app-ad.fly.dev',
 }));
 
 app.use(function(req, res, next) {
@@ -29,7 +29,7 @@ app.use(function(req, res, next) {
 
 app.use('/api', router);
 
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
   console.log(`Example app listening on port ${port}`)
 })
 
