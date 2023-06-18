@@ -16,6 +16,7 @@ router.get("/", async (req, res) => {
         const Notes = await (
             db('Notes').where('username', '=', jwt.username).select('*')
         );
+        res.status(StatusCodes.OK);
         res.json(Notes);
     } catch (e) {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR);

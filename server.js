@@ -14,7 +14,8 @@ app.use(bodyParser.json());
 
 app.use(cors({
   credentials: true,
-  origin: 'https://reminder-app-ad.fly.dev'
+  // origin: 'https://reminder-app-ad.fly.dev',
+  orogin: 'localhost:8080'
 }));
 
 app.use(function(req, res, next) {
@@ -29,6 +30,12 @@ app.use(function(req, res, next) {
 
 app.use('/api', router);
 
-app.listen(port, '0.0.0.0', () => {
+// app.listen(port, '0.0.0.0', () => {
+//   console.log(`Example app listening on port ${port}`)
+// })
+
+const server = app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
-})
+});
+
+module.exports = server;

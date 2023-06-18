@@ -2,7 +2,6 @@ const {Router} = require('express');
 const { StatusCodes } = require('http-status-codes');
 const db = require('../../db/db');
 const verifyJwt = require('./jwtVer');
-const { send } = require('process');
 
 const router = Router();
 
@@ -19,9 +18,10 @@ router.post("/", async (req, res) => {
             date: req.body.datetime, 
             description: req.body.description
         }
-        const inserted = await db('Reminders').insert(data)
+        const inserted = await db('Reminders').returning('reminder_id').insert(data);
 
-        res.sendStatus(StatusCodes.OK);
+        res.status(StatusCodes.OK);
+        res.json(inserted);
     } catch (e) {
         res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
         console.log(e);

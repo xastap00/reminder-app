@@ -24,7 +24,9 @@ import CreateRemindersFun from '../functions/createRemindersFun';
 
 function Main() {
 
-    const host = 'https://reminder-app-ad.fly.dev'
+    // const host = 'https://reminder-app-ad.fly.dev'
+    const host = '';
+
 
     const [notes, setNote] = useState([]);
     const [remindersDone, setRemindersDone] = useState([]);

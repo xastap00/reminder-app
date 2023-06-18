@@ -37,6 +37,7 @@ router.post("/", async (req, res) => {
             // httpOnly: true
         };
 
+        res.status(StatusCodes.OK);
         res.cookie('token', token, cookieOpts)
             .json({
             username
