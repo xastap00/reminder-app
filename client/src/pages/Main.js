@@ -36,8 +36,8 @@ function Main() {
 
     async function loadData () {
         const [newRemindersDone, newRemindersToBeDone] = await ListRemindersFun(host);
-        setRemindersDone([...newRemindersDone]);
-        setRemindersToBeDone([...newRemindersToBeDone]);
+        setRemindersDone(newRemindersDone);
+        setRemindersToBeDone(newRemindersToBeDone);
     }
     
     useEffect( () => {
@@ -126,7 +126,7 @@ function Main() {
                     <Tab eventKey="Inbox" title="Inbox">                       
                             {remindersToBeDone.map((reminderToBeDone) => {
                                 return (
-                                    <div className = 'reminder' key = {reminderToBeDone.id}>
+                                    <div className = 'reminder' key = {reminderToBeDone.reminder_id}>
                                         <Container>
                                             <Row className = 'reminder-grid-row'>
                                                 <Col>
@@ -165,7 +165,7 @@ function Main() {
                     <Tab eventKey="Done" title="Done">
                             {remindersDone.map((reminderDone) => {
                                 return (
-                                    <div className = 'reminder'>
+                                    <div className = 'reminder' key={reminderDone.reminder_id}>
                                         <Container>
                                             <Row className = 'reminder-grid-row'>
                                                 <Col>
